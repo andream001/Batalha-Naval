@@ -5,6 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) Iniciar",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/batalhaNaval", // Alterado para o executável
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Habilitar a reformatação automática para gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "compilar batalhaNaval", // Adicionada tarefa de pré-lançamento
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        
+        {
             "name": "clang-10 - Criar e depurar o arquivo ativo",
             "type": "cppdbg",
             "request": "launch",
@@ -14,7 +36,7 @@
             "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb",
+            "MIMode": "gdb",
             "setupCommands": [
                 {
                     "description": "Habilitar a reformatação automática para gdb",
@@ -22,8 +44,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: clang-10 arquivo de build ativo",
-            "miDebuggerPath": "/usr/bin/lldb-mi-10"
+            "preLaunchTask": "build active file",
+            "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
 }
