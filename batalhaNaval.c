@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // Função para verificar se o navio pode ser posicionado no tabuleiro
 bool podePosicionarNavio(int tabuleiro[10][10], int tamanho, int linha, int coluna, char direcao) {
@@ -44,6 +45,58 @@ void posicionarNavio(int tabuleiro[10][10], int navio[], int tamanho, int linha,
     }
 }
 
+// Função para criar a matriz de habilidade em forma de cone
+void criarHabilidadeCone(int habilidade[5][5]) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (j >= 2 - i && j <= 2 + i) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+// Função para criar a matriz de habilidade em forma de cruz
+void criarHabilidadeCruz(int habilidade[5][5]) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (i == 2 || j == 2) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+// Função para criar a matriz de habilidade em forma de octaedro
+void criarHabilidadeOctaedro(int habilidade[5][5]) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (abs(i - 2) + abs(j - 2) <= 2) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+// Função para aplicar a habilidade no tabuleiro
+void aplicarHabilidade(int tabuleiro[10][10], int habilidade[5][5], int origemLinha, int origemColuna) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            int linha = origemLinha + i - 2;
+            int coluna = origemColuna + j - 2;
+            if (linha >= 0 && linha < 10 && coluna >= 0 && coluna < 10 && habilidade[i][j] == 1) {
+                tabuleiro[linha][coluna] = 5;
+            }
+        }
+    }
+}
+
 int main() {
     int tabuleiro[10][10] = {0}; // Inicializa o tabuleiro com 0 (água)
     
@@ -65,10 +118,31 @@ int main() {
     // Posiciona o navio diagonal decrescente na linha 0, começando na coluna 9
     posicionarNavio(tabuleiro, navioDiagonalDecrescente, 3, 0, 9, 'd');
 
+    // Matrizes de habilidades
+    int habilidadeCone[5][5];
+    int habilidadeCruz[5][5];
+    int habilidadeOctaedro[5][5];
+
+    // Cria as habilidades
+    criarHabilidadeCone(habilidadeCone);
+    criarHabilidadeCruz(habilidadeCruz);
+    criarHabilidadeOctaedro(habilidadeOctaedro);
+
+    // Aplica as habilidades no tabuleiro
+    aplicarHabilidade(tabuleiro, habilidadeCone, 4, 4); // Exemplo de aplicação da habilidade Cone
+    aplicarHabilidade(tabuleiro, habilidadeCruz, 6, 6); // Exemplo de aplicação da habilidade Cruz
+    aplicarHabilidade(tabuleiro, habilidadeOctaedro, 8, 8); // Exemplo de aplicação da habilidade Octaedro
+
     // Exibe o tabuleiro no console
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
-            printf("%d ", tabuleiro[i][j]);
+            if (tabuleiro[i][j] == 0) {
+                printf("~ "); // Água
+            } else if (tabuleiro[i][j] == 3) {
+                printf("N "); // Navio
+            } else if (tabuleiro[i][j] == 5) {
+                printf("* "); // Área afetada pela habilidade
+            }
         }
         printf("\n");
     }
